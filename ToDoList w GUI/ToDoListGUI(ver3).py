@@ -17,7 +17,7 @@ row1.addWidget(buttonA)
 
 row2 = QVBoxLayout()
 dTask = QLineEdit()
-buttonD = QPushButton("Submit")
+buttonD = QPushButton("Delete")
 row2.addWidget(QLabel("Enter the number of task you wanted to Delete"))
 row2.addWidget(dTask)
 row2.addWidget(buttonD)
