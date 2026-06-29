@@ -22,13 +22,20 @@ row2.addWidget(buttonD)
 tasks = []
 taskList = QListWidget()
 
-counter = QLabel("Task: 0")
+counter = QLabel("Tasks: 0")
+status = QLabel("")
 
 def add():
     text = uTask.text().strip()
 
     if text == "":
-        print("Task cannot be empty!")
+        status.setText("Task cannot be empty!")
+        uTask.clear()
+        return
+    
+    if text in tasks:
+        status.setText("Task already exist!")
+        uTask.clear()
         return
     
     tasks.append(text)
@@ -36,7 +43,7 @@ def add():
 
     uTask.clear()
 
-    print("Task added!")
+    status.setText("Task added!")
     counter.setText(f"Tasks: {len(tasks)}")
 
 def delete():
@@ -45,6 +52,9 @@ def delete():
     if selected >= 0:
         tasks.pop(selected)
         taskList.takeItem(selected)
+        status.setText("Task Deleted!")
+    else:
+        status.setText("Please select a task.")
     
     counter.setText(f"Tasks: {len(tasks)}")
  
@@ -53,6 +63,7 @@ uTask.returnPressed.connect(add)
 buttonD.clicked.connect(delete)
 
 mainLayout.addWidget(counter)
+mainLayout.addWidget(status)
 mainLayout.addWidget(taskList)
 mainLayout.addLayout(row1)
 mainLayout.addLayout(row2)
