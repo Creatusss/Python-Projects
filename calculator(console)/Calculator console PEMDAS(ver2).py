@@ -7,15 +7,15 @@ while True:
     if expression == "exit":
         break
     parts = expression.split()
-    
+
+    if len(parts) % 2 == 0:
+         print("Invalid Expression")
+         continue
     
     while "*" in parts or "/" in parts:
         for i  in range(1, len(parts), 2):
             operator = parts[i]
             leftNumber = float(parts[i - 1])
-            if i + 1 >= len(parts):
-                print("Invalid Expression!")
-                break
             rightNumber = float(parts[i + 1])
 
             if operator == "*" or operator == "/":
@@ -37,9 +37,6 @@ while True:
         for i in range(1, len(parts), 2):   
             operator = parts[i]
             leftNumber = float(parts[i - 1])
-            if i + 1 >= len(parts):
-                print("Invalid Expression!")
-                break
             rightNumber = float(parts[i + 1])
 
             if operator == "+" or operator == "-":
