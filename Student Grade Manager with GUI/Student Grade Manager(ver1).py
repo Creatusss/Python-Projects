@@ -64,8 +64,12 @@ def avg():
         quiz2Input = float(quiz2.text())
         quiz3Input = float(quiz3.text())
 
+        if studentName.text().strip() == "":
+            raise ValueError
         if not (0 <= quiz1Input <= 100 and 0 <= quiz2Input <= 100 and 0 <= quiz3Input <= 100):
             raise ValueError
+
+        errorMessage.setText("")
 
         ave = (quiz1Input+quiz2Input+quiz3Input)/3
         average.setText(f"Average: {ave}")
@@ -74,19 +78,19 @@ def avg():
             status.setText("Status: Passed")
             letterGrade.setText("Letter Grade: A")
 
-        elif 80 <= ave <= 89:
+        elif 80 <= ave <= 89.9:
             status.setText("Status: Passed")
             letterGrade.setText("Letter Grade: B")
 
-        elif 70 <= ave <= 79:
-            if 75 <= ave <= 79:
+        elif 70 <= ave <= 79.9:
+            if 75 <= ave <= 79.9:
                 status.setText("Status: Passed")
                 letterGrade.setText("Letter Grade: C")
             else:
                 status.setText("Status: Fail")
                 letterGrade.setText("Letter Grade: C")
 
-        elif 60 <= ave <= 69:
+        elif 60 <= ave <= 69.9:
             status.setText("Status: Fail")
             letterGrade.setText("Letter Grade: D")
 
