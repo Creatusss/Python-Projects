@@ -40,6 +40,7 @@ actionBar.addWidget(deleteSelected)
 
 outputBar = QVBoxLayout()
 expensesList = []
+totalPrice = 0
 expensesListGUI = QListWidget()
 outputTop = QLabel("----------")
 outputExpenseLabel = QLabel("Expenses: ")
@@ -54,17 +55,44 @@ outputBar.addWidget(outputBot)
 outputBar.addWidget(outputTotalExpenses)
 outputBar.addWidget(status)
 
-def add():
+
+def addFeature():
     userExpense = expense.text()
-    userAmount = int(amount.text())
+    try:
+        userAmount = int(amount.text())
+        status.setText("Status: Ready")
+        item = f"{userExpense} - ₱{userAmount}"
 
-    item = f"{userExpense} - ₱{userAmount}"
+        global totalPrice
+        totalPrice += userAmount
 
-    expensesList.append(userExpense)
-    expensesList.append(userAmount)
-    expensesListGUI.addItem(item)
+        expensesList.append(item)
+        expensesListGUI.addItem(item)
 
-addExpense.clicked.connect(add)
+        expense.clear()
+        amount.clear()
+
+        status.setText("Added")
+        outputTotalExpenses.setText(f"Total Expenses: {totalPrice}")
+
+    except ValueError:
+        status.setText("Invalid Input")
+
+    
+
+def delFeature():
+    deleteRow = expensesListGUI.currentRow()
+    if deleteRow >= 0:
+        expensesList.pop(deleteRow)
+        expensesListGUI.takeItem(deleteRow)
+        status.setText("Deleted")
+    else:
+        status.setText("Please Select a Task.")
+    
+
+addExpense.clicked.connect(addFeature)
+amount.returnPressed.connect(addFeature)
+deleteSelected.clicked.connect(delFeature)
 
 
 mainLayout.addLayout(titleBar)
