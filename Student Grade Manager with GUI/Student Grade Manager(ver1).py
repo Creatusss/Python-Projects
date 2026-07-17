@@ -1,18 +1,17 @@
 import sys
-from PyQt6.QtWidgets import QApplication, QWidget, QLineEdit, QPushButton, QLabel, QVBoxLayout, QHBoxLayout
+from PyQt6.QtWidgets import QApplication, QWidget, QPushButton, QLabel, QLineEdit, QVBoxLayout, QHBoxLayout, QListWidget
 from PyQt6.QtCore import Qt
 
 app = QApplication(sys.argv)
 
 window = QWidget()
-window.setWindowTitle("Student Grade Manager")
 
 mainLayout = QVBoxLayout()
 
 titleBar = QVBoxLayout()
 top = QLabel("----------")
 top.setAlignment(Qt.AlignmentFlag.AlignCenter)
-title = QLabel("Studen Grade Manager")
+title = QLabel("Expense Tracker")
 title.setAlignment(Qt.AlignmentFlag.AlignCenter)
 bottom = QLabel("----------")
 bottom.setAlignment(Qt.AlignmentFlag.AlignCenter)
@@ -22,107 +21,91 @@ titleBar.addWidget(title)
 titleBar.addWidget(bottom)
 
 userInputBar = QVBoxLayout()
-studentNameGuide = QLabel("Student Name:")
-studentName = QLineEdit()
-quiz1Guide = QLabel("Quiz 1:")
-quiz1 = QLineEdit()
-quiz2Guide = QLabel("Quiz 2:")
-quiz2 = QLineEdit()
-quiz3Guide = QLabel("Quiz 3:")
-quiz3 = QLineEdit()
+expenseLabel = QLabel("Expense Name: ")
+expense = QLineEdit()
+amountLabel = QLabel("Amount: ")
+amount = QLineEdit()
 
-userInputBar.addWidget(studentNameGuide)
-userInputBar.addWidget(studentName)
-userInputBar.addWidget(quiz1Guide)
-userInputBar.addWidget(quiz1)
-userInputBar.addWidget(quiz2Guide)
-userInputBar.addWidget(quiz2)
-userInputBar.addWidget(quiz3Guide)
-userInputBar.addWidget(quiz3)
+userInputBar.addWidget(expenseLabel)
+userInputBar.addWidget(expense)
+userInputBar.addWidget(amountLabel)
+userInputBar.addWidget(amount)
 
-actionsBar = QHBoxLayout()
-calculate = QPushButton("Calculate")
-clear = QPushButton("Clear")
+actionBar = QHBoxLayout()
+addExpense = QPushButton("Add Expense")
+deleteSelected = QPushButton("Delete Selected")
 
-actionsBar.addWidget(calculate)
-actionsBar.addWidget(clear)
+actionBar.addWidget(addExpense)
+actionBar.addWidget(deleteSelected)
 
-displayBar = QVBoxLayout()
-average = QLabel("Average: ")
-status = QLabel("Status: ")
-letterGrade = QLabel("Letter Grade: ")
-errorMessage = QLabel("")
+outputBar = QVBoxLayout()
+expensesList = []
+totalPrice = 0
+expensesListGUI = QListWidget()
+outputTop = QLabel("----------")
+outputExpenseLabel = QLabel("Expenses: ")
+outputBot = QLabel("----------")
+outputTotalExpenses = QLabel("Total Expenses: ")
+status = QLabel("Status: Ready")
 
-displayBar.addWidget(average)
-displayBar.addWidget(status)
-displayBar.addWidget(letterGrade)
-displayBar.addWidget(errorMessage)
+outputBar.addWidget(outputTop)
+outputBar.addWidget(outputExpenseLabel)
+outputBar.addWidget(expensesListGUI)
+outputBar.addWidget(outputBot)
+outputBar.addWidget(outputTotalExpenses)
+outputBar.addWidget(status)
 
-def avg():
+
+def addFeature():
+    userExpense = expense.text()
+        
     try:
-        quiz1Input = float(quiz1.text())
-        quiz2Input = float(quiz2.text())
-        quiz3Input = float(quiz3.text())
-
-        if studentName.text().strip() == "":
+        userAmount = int(amount.text())
+        if expense.text().strip() == "":
             raise ValueError
-        if not (0 <= quiz1Input <= 100 and 0 <= quiz2Input <= 100 and 0 <= quiz3Input <= 100):
-            raise ValueError
+        
+        status.setText("Status: Ready")
+        item = f"{userExpense} - ₱{userAmount}"
 
-        errorMessage.setText("")
+        global totalPrice
+        totalPrice += userAmount
 
-        ave = (quiz1Input+quiz2Input+quiz3Input)/3
-        average.setText(f"Average: {ave}")
+        expensesList.append(item)
+        expensesListGUI.addItem(item)
 
-        if 90 <= ave <= 100:
-            status.setText("Status: Passed")
-            letterGrade.setText("Letter Grade: A")
+        expense.clear()
+        amount.clear()
 
-        elif 80 <= ave <= 89.9:
-            status.setText("Status: Passed")
-            letterGrade.setText("Letter Grade: B")
-
-        elif 70 <= ave <= 79.9:
-            if 75 <= ave <= 79.9:
-                status.setText("Status: Passed")
-                letterGrade.setText("Letter Grade: C")
-            else:
-                status.setText("Status: Fail")
-                letterGrade.setText("Letter Grade: C")
-
-        elif 60 <= ave <= 69.9:
-            status.setText("Status: Fail")
-            letterGrade.setText("Letter Grade: D")
-
-        else:
-            status.setText("Status: Fail")
-            letterGrade.setText("Letter Grade: F")
+        status.setText("Added")
+        outputTotalExpenses.setText(f"Total Expenses: {totalPrice}")
 
     except ValueError:
-        errorMessage.setText("Invalid Input!")
+        status.setText("Invalid Input")
 
-def clr():
-    studentName.clear()
-    quiz1.clear()
-    quiz2.clear()
-    quiz3.clear()
+    
 
-    average.setText("Average: ")
-    status.setText("Status: ")
-    letterGrade.setText("Letter Grade: ")
-    errorMessage.setText("")
+def delFeature():
+    deleteRow = expensesListGUI.currentRow()
+    if deleteRow >= 0:
+        expensesList.pop(deleteRow)
+        expensesListGUI.takeItem(deleteRow)
+        status.setText("Deleted")
+    else:
+        status.setText("Please Select a Task.")
+    
 
-
-calculate.clicked.connect(avg)
-clear.clicked.connect(clr)
+addExpense.clicked.connect(addFeature)
+amount.returnPressed.connect(addFeature)
+deleteSelected.clicked.connect(delFeature)
 
 
 mainLayout.addLayout(titleBar)
 mainLayout.addLayout(userInputBar)
-mainLayout.addLayout(actionsBar)
-mainLayout.addLayout(displayBar)
+mainLayout.addLayout(actionBar)
+mainLayout.addLayout(outputBar)
 
 window.setLayout(mainLayout)
+
 
 window.show()
 app.exec()
